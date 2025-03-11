@@ -45,7 +45,7 @@ public:
 
 #pragma region Skills
     /// \brief The weapon current level
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skills", meta = (ClampMin = "1", ClampMax = "3"))
+    UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Skills", meta = (ClampMin = "1", ClampMax = "3"))
     uint8 Level = 1;
 
     /// \brief The weapon special ability.
