@@ -3,7 +3,7 @@
 #include "Equipment/Inventory.h"
 #include "Equipment/BaseArmor.h"
 #include "Equipment/BaseWeapon.h"
-#include "GAS/EnsGameplayAbilityBase.h"
+#include "GAS/EnsSkillBase.h"
 
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
@@ -43,10 +43,10 @@ void UInventory::BeginPlay()
     if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
     {
         EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &UInventory::SwapEquipmentSet);
-        EnhancedInputComponent->BindAction(MainAbilityAction, ETriggerEvent::Started, this, &UInventory::HandleMainAbility);
         EnhancedInputComponent->BindActionValueLambda(LightSetAction, ETriggerEvent::Started, [&](const FInputActionValue&) { HandleSet(0); });
         EnhancedInputComponent->BindActionValueLambda(MediumSetAction, ETriggerEvent::Started, [&](const FInputActionValue&) { HandleSet(1); });
         EnhancedInputComponent->BindActionValueLambda(HeavySetAction, ETriggerEvent::Started, [&](const FInputActionValue&) { HandleSet(2); });
+        EnhancedInputComponent->BindAction(MainAbilityAction, ETriggerEvent::Started, this, &UInventory::HandleMainAbility);
     }
 
     // Initialize the equipment set (at index 0)
@@ -111,10 +111,7 @@ void UInventory::UpdateEquippedSet()
 
         Character->GetMesh()->MoveIgnoreActors.Add(AttachedWeapon);
         if (UAbilitySystemComponent* AbilitySystem = Character->FindComponentByClass<UAbilitySystemComponent>())
-        {
-            ensure(AttachedWeapon->MainAbility);
-            MainAbilityHandle = AbilitySystem->GiveAbility(FGameplayAbilitySpec(AttachedWeapon->MainAbility));
-        }
+            MainAbilityHandle = AbilitySystem->GiveAbility(FGameplayAbilitySpec(AttachedWeapon->MainSkill, AttachedWeapon->Level, 0));
 
         UE_LOG(LogInventory, Log, TEXT("Equipped weapon: %s"), *WeaponClass->GetName());
         OnSwapWeapon.Broadcast(GetCurrentWeapon());
@@ -134,11 +131,11 @@ void UInventory::UpdateEquippedSet()
 
 void UInventory::HandleMainAbility()
 {
+    ensure(AttachedWeapon->MainSkill != nullptr && "MainSkill must be set for the weapon.");
+
     const ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (UAbilitySystemComponent* AbilitySystem = Character->FindComponentByClass<UAbilitySystemComponent>())
-    {
-        AbilitySystem->TryActivateAbilityByClass(AttachedWeapon->MainAbility);
-    }
+        AbilitySystem->TryActivateAbilityByClass(AttachedWeapon->MainSkill);
 }
 
 void UInventory::HandleSet(const uint8_t SetIndex)
