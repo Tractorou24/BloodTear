@@ -20,11 +20,11 @@ public:
 #pragma region BaseAttack
     /// \brief The weapon's basic attack ability.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    TSubclassOf<class UEnsGameplayAbilityBase> BaseAttack;
+    TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
 
     /// \brief The type of actor to spawn (defines collision & range)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    TSubclassOf<AActor> CollisionActor;
+    TSubclassOf<AActor> BaseAttackCollisionActor;
 
     /// \brief The animation montage to play when the base attack is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
@@ -32,15 +32,15 @@ public:
 
     /// \brief The damage applied to the target during the attack.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float Damage = 10.f;
+    float BaseAttackDamage = 10.f;
 
     /// \brief The time at which the collision actor spawns after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float SpawnTime = 1.f;
+    float BaseAttackSpawnTime = 1.f;
 
     /// \brief The time at which the collision actor is deleted after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float DestroyTime = 2.f;
+    float BaseAttackDestroyTime = 2.f;
 #pragma endregion
 
 #pragma region Ability
