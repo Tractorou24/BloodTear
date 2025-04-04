@@ -37,10 +37,6 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void OnBaseAttack();
 
-    /// \brief Cancel the abilities with passed tags
-    UFUNCTION(BlueprintCallable)
-    void CancelCurrentAbilities(FGameplayTagContainer WithTags);
-
     /// \copydoc AEnsCharacterBase::OnDeath
     virtual void OnDeath() override;
 

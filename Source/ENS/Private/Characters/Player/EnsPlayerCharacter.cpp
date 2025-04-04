@@ -73,12 +73,6 @@ void AEnsPlayerCharacter::BeginPlay()
     AddStartupEffects();
 }
 
-void AEnsPlayerCharacter::CancelCurrentAbilities(FGameplayTagContainer WithTags)
-{
-    auto ASC = GetAbilitySystemComponent();
-    if (ASC)
-        ASC->CancelAbilities(&WithTags);
-}
 
 void AEnsPlayerCharacter::OnDeath()
 {

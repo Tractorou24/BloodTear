@@ -45,6 +45,10 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+    /// \brief Cancel the abilities with passed tags
+    UFUNCTION(BlueprintCallable)
+    void CancelCurrentAbilities(FGameplayTagContainer WithTags);
+
 protected:
     /// \brief Called at the game start to initialize the character.
     virtual void BeginPlay() override;
