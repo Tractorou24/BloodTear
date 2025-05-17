@@ -24,115 +24,100 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUp, int64, NewLevel);
 UCLASS()
 class ENS_API AEnsPlayerCharacter : public AEnsCharacterBase, public IGenericTeamAgentInterface
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
-    /// \brief Constructs a character and setups its components.
-    explicit AEnsPlayerCharacter();
+	/// \brief Constructs a character and setups its components.
+	explicit AEnsPlayerCharacter();
 
-    /// \copydoc AEnsCharacterBase::BaseAttack
-    UFUNCTION(BlueprintCallable)
-    virtual void BaseAttack() override;
+	/// \copydoc AEnsCharacterBase::BaseAttack
+	UFUNCTION(BlueprintCallable)
+	virtual void BaseAttack() override;
 
-    /// \brief Called when the player attack an enemy
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnBaseAttack();
+	/// \brief Called when the player attack an enemy
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnBaseAttack();
 
-    /// \copydoc AEnsCharacterBase::OnDeath
-    virtual void OnDeath(AEnsCharacterBase* SourceActor) override;
+	/// \copydoc AEnsCharacterBase::OnDeath
+	virtual void OnDeath(AEnsCharacterBase* SourceActor) override;
 
-    /**
-     * \brief Moves the player character to an \p Actor.
-     * \param Actor The actor to move to.
-     */
-    void MoveToActor(const AActor* Actor);
+	/**
+	 * \brief Adds \p Amount to the player experience and level-up if required.
+	 * \param Amount The number of experience points to add.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void IncreaseXp(int64 Amount);
 
-    /**
-     * \brief Adds \p Amount to the player experience and level-up if required.
-     * \param Amount The number of experience points to add.
-     */
-    UFUNCTION(BlueprintCallable)
-    void IncreaseXp(int64 Amount);
+	/// \brief Gets the current level of the player.
+	UFUNCTION(BlueprintCallable)
+	[[nodiscard]] int64 GetCurrentLevel() const;
 
-    /// \brief Gets the current level of the player.
-    UFUNCTION(BlueprintCallable)
-    [[nodiscard]] int64 GetCurrentLevel() const;
+	/// \brief Called when the player levels up (with the new level).
+	UPROPERTY(BlueprintAssignable)
+	FOnLevelUp OnLevelUp;
 
-    /// \brief Called when the player levels up (with the new level).
-    UPROPERTY(BlueprintAssignable)
-    FOnLevelUp OnLevelUp;
+	/// \brief Gets the inventory component of the player.
+	[[nodiscard]] class UInventory* GetInventoryComponent() const;
 
-    /// \brief Gets the path following component of the character used to move on a navmesh.
-    [[nodiscard]] class UPathFollowingComponent* GetPathFollowingComponent() const;
+	/**
+	 * \brief Sets the team the current player is in.
+	 * \param NewTeamID The id of the new team.
+	 */
+	UFUNCTION(BlueprintCallable)
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 
-    /// \brief Gets the inventory component of the player.
-    [[nodiscard]] class UInventory* GetInventoryComponent() const;
+	/// \brief Gets the id of the team the player is currently in.
+	UFUNCTION(BlueprintCallable)
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
-    /**
-     * \brief Sets the team the current player is in.
-     * \param NewTeamID The id of the new team.
-     */
-    UFUNCTION(BlueprintCallable)
-    virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
+	/// \brief Vector used as forward direction.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	FVector ForwardVector;
 
-    /// \brief Gets the id of the team the player is currently in.
-    UFUNCTION(BlueprintCallable)
-    virtual FGenericTeamId GetGenericTeamId() const override;
+	/// \brief Vector used as right direction.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	FVector RightVector;
 
-    /// \brief Vector used as forward direction.
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
-    FVector ForwardVector;
-
-    /// \brief Vector used as right direction.
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
-    FVector RightVector;
-
-    /**
-     * \brief Move player using \ref ForwardVector and \ref RightVector scaled by the values of \p MovementVector.
-     * \param MovementVector Scale of movement.
-     */
-    void Move(const FVector2D& MovementVector);
+	/**
+	 * \brief Move player using \ref ForwardVector and \ref RightVector scaled by the values of \p MovementVector.
+	 * \param MovementVector Scale of movement.
+	 */
+	void Move(const FVector2D& MovementVector);
 
 private:
-    void MoveTo(const struct FAIMoveRequest& MoveReq);
+	FGenericTeamId TeamId;
 
-    FGenericTeamId TeamId;
+	/// \brief The component for managing inventory
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	class UInventory* Inventory;
 
-    /// \brief The component for movement using pathfinding
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-    UPathFollowingComponent* PathFollowingComponent;
-
-    /// \brief The component for managing inventory
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-    class UInventory* Inventory;
-
-    /// \brief The attribute set to hold potions data.
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
-    class UEnsPotionAttributeSet* PotionAttributeSet;
+	/// \brief The attribute set to hold potions data.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	class UEnsPotionAttributeSet* PotionAttributeSet;
 
 #pragma region BaseAttck
-    /// \brief Whether the player is attacking or not.
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
-    bool bIsAttacking = false;
+	/// \brief Whether the player is attacking or not.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttacking = false;
 
-    /// \brief Whether an attack is buffered or not.
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
-    bool bIsAttackBuffered = false;
+	/// \brief Whether an attack is buffered or not.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttackBuffered = false;
 
-    /// \brief Whether an attack can be buffered or not. (e.g. between collision is spawned and destroyed)
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
-    bool bCanBuffer = false;
+	/// \brief Whether an attack can be buffered or not. (e.g. between collision is spawned and destroyed)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
+	bool bCanBuffer = false;
 #pragma endregion
 
 #pragma region Levels
-    /// \brief The current player experience.
-    UPROPERTY(BlueprintReadOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
-    int64 CurrentExperience = 0;
+	/// \brief The current player experience.
+	UPROPERTY(BlueprintReadOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
+	int64 CurrentExperience = 0;
 
-    /// \brief The number of points at which the level `index + 1` is reached.
-    UPROPERTY(EditDefaultsOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
-    TArray<int64> ExperienceLevelTransitions;
+	/// \brief The number of points at which the level `index + 1` is reached.
+	UPROPERTY(EditDefaultsOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
+	TArray<int64> ExperienceLevelTransitions;
 #pragma endregion
 };

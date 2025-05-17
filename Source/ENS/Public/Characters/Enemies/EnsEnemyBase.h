@@ -76,10 +76,6 @@ private:
 
 	FGenericTeamId TeamId;
 
-	/// \brief The interaction component.
-	UPROPERTY(EditAnywhere, Category = "Interactions", meta = (AllowPrivateAccess = "true"))
-	class UEnsMouseInteractableComponent* MouseInteractableComponent = nullptr;
-
 	/// \brief The interaction zone of the enemy (i.e. where it can interact after moving)
 	UPROPERTY(EditAnywhere, Category = "Interactions", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* InteractZone = nullptr;

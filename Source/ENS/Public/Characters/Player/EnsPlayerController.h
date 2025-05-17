@@ -88,27 +88,4 @@ private:
 
     /// \brief Called when \ref AttackAction is pressed; Trigger the attack of the player character.
     void Attack();
-
-#pragma region Interactions
-    /// \brief Moves to and interacts with the object under the cursor if it exists.
-    void Interact();
-
-    /**
-     * \brief Resets the interaction when the action is completed.
-     * \param bResetMovement `true` to reset the player movement, `false` otherwise.
-     */
-    UFUNCTION(BlueprintCallable)
-    void ResetInteract(bool bResetMovement = false);
-
-    /// \brief The action to interact with the objects.
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    UInputAction* InteractAction = nullptr;
-
-    /// \brief The object the player is trying to interact with.
-    UPROPERTY(Transient, BlueprintReadOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
-    UObject* PendingInteractObject = nullptr;
-
-    /// \brief `true` if an interaction was done in the frame so the player movement from click can be disabled.
-    bool bIsInInteractMode = false;
-#pragma endregion
 };
