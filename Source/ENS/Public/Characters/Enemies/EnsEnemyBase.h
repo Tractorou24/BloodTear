@@ -3,11 +3,11 @@
 #pragma once
 
 #include "Characters/EnsCharacterBase.h"
-
 #include "CoreMinimal.h"
 #include "GenericTeamAgentInterface.h"
 
 #include "EnsEnemyBase.generated.h"
+
 
 DECLARE_LOG_CATEGORY_EXTERN(LogEnemy, Log, All);
 
@@ -44,6 +44,20 @@ public:
     /// \brief Gets the team the enemy is currently in.
     UPROPERTY(BlueprintAssignable)
     FOnEnemyDestroyed OnEnemyDestroyed;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|UI")
+    TSubclassOf<class UEnemyInfo> UIEnemyInfoClass;
+
+    UPROPERTY()
+    UEnemyInfo* UIEnemyInfo;
+
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|UI")
+    class UWidgetComponent* UIEnemyInfoComponent;
+
+    UFUNCTION()
+    void InitUI();
+
+    virtual void HealthChanged(const FOnAttributeChangeData& Data) override;
 
 protected:
     virtual void BeginPlay() override;
