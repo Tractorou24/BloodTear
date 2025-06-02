@@ -41,7 +41,7 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual FGenericTeamId GetGenericTeamId() const override;
 
-    /// \brief Gets the team the enemy is currently in.
+    /// \brief Called when the enemy is destroyed.
     UPROPERTY(BlueprintAssignable)
     FOnEnemyDestroyed OnEnemyDestroyed;
 

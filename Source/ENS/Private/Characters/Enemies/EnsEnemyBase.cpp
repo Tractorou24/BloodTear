@@ -82,7 +82,7 @@ void AEnsEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 void AEnsEnemyBase::BeginPlay()
 {
     InitUI();
-    
+
     Super::BeginPlay();
 
     if (!AbilitySystemComponent)
@@ -105,8 +105,9 @@ void AEnsEnemyBase::OnDeath(AEnsCharacterBase* SourceActor)
         PlayerCharacter->IncreaseXp(GivenExperience);
 
     OnDeath_Blueprint();
-    Destroy();
     OnEnemyDestroyed.Broadcast();
+
+    Destroy();
 }
 
 void AEnsEnemyBase::Attacked(AActor* Source)
