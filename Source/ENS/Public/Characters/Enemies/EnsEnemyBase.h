@@ -45,25 +45,14 @@ public:
     UPROPERTY(BlueprintAssignable)
     FOnEnemyDestroyed OnEnemyDestroyed;
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|UI")
-    TSubclassOf<class UEnemyInfo> UIEnemyInfoClass;
-
-    UPROPERTY()
-    UEnemyInfo* UIEnemyInfo;
-
-    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|UI")
-    class UWidgetComponent* UIEnemyInfoComponent;
-
-    UFUNCTION()
-    void InitUI();
-
-    virtual void HealthChanged(const FOnAttributeChangeData& Data) override;
-
 protected:
     virtual void BeginPlay() override;
 
     /// \brief Kills the enemy.
     virtual void OnDeath(AEnsCharacterBase* SourceActor) override;
+
+	/// \copydoc AEnsCharacterBase::HealthChanged
+	virtual void HealthChanged(const FOnAttributeChangeData& Data) override;
 
     /**
      * @brief OnDeath blueprint event called by OnDeath native class
@@ -80,6 +69,12 @@ private:
     UFUNCTION()
     void Attacked(AActor* Source);
 
+	/**
+    * \brief Initializes the UI for the enemy.
+	 */
+	UFUNCTION()
+	void InitUI();
+
     FGenericTeamId TeamId;
 
     /// \brief The interaction component.
@@ -94,7 +89,18 @@ private:
     UPROPERTY(EditAnywhere, Category = "Interactions", meta = (AllowPrivateAccess = "true"))
     class UBoxComponent* InteractionClickZone = nullptr;
 
+	/// \brief The class used to display the enemy's information in the UI.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UEnemyInfo> UIEnemyInfoClass;
+
+	/// \brief The widget component used to display the enemy's information in the UI.
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* UIEnemyInfoComponent = nullptr;
+
     /// \brief The number of XP points gained by killing this enemy.
     UPROPERTY(EditDefaultsOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
     int64 GivenExperience = 10;
+
+	UPROPERTY()
+	UEnemyInfo* UIEnemyInfo = nullptr;
 };

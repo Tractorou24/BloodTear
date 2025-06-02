@@ -2,16 +2,15 @@
 
 #include "Characters/Enemies/EnsEnemyBase.h"
 
-#include "Characters/Enemies/EnsAIControllerBase.h"
 #include "Characters/Player/EnsPlayerCharacter.h"
 #include "Characters/Player/EnsPlayerController.h"
 #include "GAS/EnsAbilitySystemComponent.h"
+#include "GAS/AttributeSets/EnsHealthAttributeSet.h"
 #include "Interactions/EnsMouseInteractableComponent.h"
 #include "UI/EnemyInfo.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GAS/AttributeSets/EnsHealthAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogEnemy)
