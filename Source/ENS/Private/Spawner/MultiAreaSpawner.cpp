@@ -295,6 +295,6 @@ void AMultiAreaSpawner::SpawnEnemies(const TSubclassOf<AEnsEnemyBase>& ActorToSp
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
         AEnsEnemyBase* Enemy = GetWorld()->SpawnActor<AEnsEnemyBase>(ActorToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-        Enemy->OnEnemyDestroyed.AddUniqueDynamic(this, &AMultiAreaSpawner::OnEnemyDestroyed);
+        Enemy->OnEnemyDestroyed.AddDynamic(this, &AMultiAreaSpawner::OnEnemyDestroyed);
     }
 }
