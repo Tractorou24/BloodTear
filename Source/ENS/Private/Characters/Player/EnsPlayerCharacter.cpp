@@ -2,6 +2,7 @@
 
 #include "Characters/Player/EnsPlayerCharacter.h"
 #include "Characters/Enemies/EnsEnemyBase.h"
+#include "Equipment/BaseWeapon.h"
 #include "Equipment/Inventory.h"
 #include "GAS/EnsAbilitySystemComponent.h"
 #include "GAS/AttributeSets/EnsPotionAttributeSet.h"
@@ -78,16 +79,33 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DisableInput(PlayerController);
 
-	// Find and move to the player start
-	const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController());
-	SetActorLocation(PlayerStart->GetActorLocation());
-	SetActorRotation(PlayerStart->GetActorRotation());
+	auto Duration = GetMesh()->GetAnimInstance()->Montage_Play(GetInventoryComponent()->GetCurrentWeapon()->DeathAnimationMontage);
+	if (Duration == 0.f)
+	{
+		UE_LOG(LogPlayerCharacter, Warning, TEXT("Failed to play death animation for player %s"), *GetName());
+		Duration = 0.1f; // So the timer is called one day (never called at 0)
+	}
 
-	EnableInput(PlayerController);
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindLambda([&, this]
+	{
+		// Find and move to the player start
+		const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController());
+		SetActorLocation(PlayerStart->GetActorLocation());
+		SetActorRotation(PlayerStart->GetActorRotation());
 
-	// Call the parent to reset the attributes
-	Super::OnDeath(SourceActor);
+		// Stop all running montages
+		GetMesh()->GetAnimInstance()->Montage_Stop(0.f, nullptr);
+
+		EnableInput(PlayerController);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		// Call the parent to reset the attributes
+		Super::OnDeath(SourceActor);
+	});
+
+	FTimerHandle DeathTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, TimerCallback, Duration, false);
 }
 
 void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)

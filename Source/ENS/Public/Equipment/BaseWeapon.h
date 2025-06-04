@@ -12,52 +12,58 @@
 UCLASS()
 class ENS_API ABaseWeapon : public AActor
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    explicit ABaseWeapon();
+	explicit ABaseWeapon();
 
 #pragma region BaseAttack
-    /// \brief The weapon's basic attack ability.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
+	/// \brief The weapon's basic attack ability.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
 
-    /// \brief The type of actor to spawn (defines collision & range)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    TSubclassOf<AActor> BaseAttackCollisionActor;
+	/// \brief The type of actor to spawn (defines collision & range)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	TSubclassOf<AActor> BaseAttackCollisionActor;
 
-    /// \brief The animation montage to play when the base attack is activated.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    UAnimMontage* BaseAttackAnimationMontage;
+	/// \brief The animation montage to play when the base attack is activated.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	UAnimMontage* BaseAttackAnimationMontage;
 
-    /// \brief The damage applied to the target during the attack.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackDamage = 10.f;
+	/// \brief The damage applied to the target during the attack.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	float BaseAttackDamage = 10.f;
 
-    /// \brief The time at which the collision actor spawns after the ability is activated.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackSpawnTime = 1.f;
+	/// \brief The time at which the collision actor spawns after the ability is activated.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	float BaseAttackSpawnTime = 1.f;
 
-    /// \brief The time at which the collision actor is deleted after the ability is activated.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackDestroyTime = 2.f;
+	/// \brief The time at which the collision actor is deleted after the ability is activated.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	float BaseAttackDestroyTime = 2.f;
 
-    /// \brief The range of the attack. (i.e. the distance at which the player stops moving and attacks)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackRange = 20.f;
+	/// \brief The range of the attack. (i.e. the distance at which the player stops moving and attacks)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+	float BaseAttackRange = 20.f;
 #pragma endregion
 
 #pragma region Skills
-    /// \brief The weapon special ability.
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skills");
-    TSubclassOf<class UEnsSkillBase> MainSkill;
+	/// \brief The weapon special ability.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skills");
+	TSubclassOf<class UEnsSkillBase> MainSkill;
 #pragma endregion
 
-    /// \brief Component representing the weapon model.
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
-    UStaticMeshComponent* Mesh = nullptr;
+#pragma region Death Animation
+	/// \brief The animation montage to play when the character dies while holding this weapon.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death Animation");
+	UAnimMontage* DeathAnimationMontage = nullptr;
+#pragma endregion
 
-    /// \brief Name of the socket where the weapon should be attached.
-    UPROPERTY(EditAnywhere, BlueprintReadOnly);
-    FName SocketName;
+	/// \brief Component representing the weapon model.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
+	UStaticMeshComponent* Mesh = nullptr;
+
+	/// \brief Name of the socket where the weapon should be attached.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly);
+	FName SocketName;
 };
