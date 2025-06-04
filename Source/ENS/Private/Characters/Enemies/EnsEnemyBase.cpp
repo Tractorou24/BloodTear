@@ -6,7 +6,6 @@
 #include "Characters/Player/EnsPlayerController.h"
 #include "GAS/EnsAbilitySystemComponent.h"
 #include "GAS/AttributeSets/EnsHealthAttributeSet.h"
-#include "Interactions/EnsMouseInteractableComponent.h"
 #include "UI/EnemyInfo.h"
 
 #include "NiagaraComponent.h"
@@ -30,9 +29,6 @@ AEnsEnemyBase::AEnsEnemyBase()
 
 	InteractionClickZone = CreateDefaultSubobject<UBoxComponent>(TEXT("ClickCollider"));
 	InteractionClickZone->SetupAttachment(RootComponent);
-
-	MouseInteractableComponent = CreateDefaultSubobject<UEnsMouseInteractableComponent>(TEXT("Interactions"));
-	MouseInteractableComponent->SetupInteractZone(InteractZone, InteractionClickZone);
 
 	UIEnemyInfoComponent = CreateDefaultSubobject<UWidgetComponent>(FName("UIEnemyInfoComponent"));
 	UIEnemyInfoComponent->SetupAttachment(RootComponent);
@@ -95,9 +91,6 @@ void AEnsEnemyBase::BeginPlay()
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	AddStartupEffects();
-
-	// Callbacks
-	MouseInteractableComponent->OnInteract.AddDynamic(this, &AEnsEnemyBase::Attacked);
 }
 
 void AEnsEnemyBase::OnDeath(AEnsCharacterBase* SourceActor)
