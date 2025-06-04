@@ -7,8 +7,13 @@ public class ENS : ModuleRules
 	public ENS(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "GameplayAbilities", "NavigationSystem" });
-		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks" });
-    }
+
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "GameplayAbilities"
+			, "NavigationSystem"
+		});
+		PrivateDependencyModuleNames.AddRange(new string[]
+			{ "GameplayAbilities", "GameplayTags", "GameplayTasks", "Niagara" });
+	}
 }
