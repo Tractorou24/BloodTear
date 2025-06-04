@@ -76,6 +76,10 @@ void AEnsPlayerCharacter::BeginPlay()
 
 void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
 {
+    static bool bCanDie = true;
+    if (!bCanDie)
+        return;
+
     APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     DisableInput(PlayerController);
@@ -102,10 +106,12 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
 
         // Call the parent to reset the attributes
         Super::OnDeath(SourceActor);
+        bCanDie = true; // Allow the player to die again
     });
 
     FTimerHandle DeathTimerHandle;
     GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, TimerCallback, Duration, false);
+    bCanDie = false; // Prevents the player from dying multiple times
 }
 
 void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)
