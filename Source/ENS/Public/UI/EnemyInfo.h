@@ -2,21 +2,21 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CoreMinimal.h"
 #include "EnemyInfo.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ENS_API UEnemyInfo : public UUserWidget
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 public:
     virtual void NativeConstruct() override;
-    
+
     UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
     void OnHealthChanged(float healthPercent);
 };
