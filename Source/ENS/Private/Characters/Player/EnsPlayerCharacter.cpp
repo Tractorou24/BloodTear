@@ -162,6 +162,7 @@ void AEnsPlayerCharacter::Move(const FVector2D& MovementVector)
     if (!Controller)
         return;
 
+    LastMovementVector = MovementVector;
     AddMovementInput(ForwardVector, MovementVector.X);
     AddMovementInput(RightVector, MovementVector.Y);
 }
