@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ScalableFloat.h"
 
 #include "BaseWeapon.generated.h"
 
@@ -31,7 +32,7 @@ public:
 
     /// \brief The damage applied to the target during the attack.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackDamage = 10.f;
+    FScalableFloat BaseAttackDamage;
 
     /// \brief The time at which the collision actor spawns after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
