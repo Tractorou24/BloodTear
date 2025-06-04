@@ -17,6 +17,8 @@ class ENS_API ABaseWeapon : public AActor
 public:
     explicit ABaseWeapon();
 
+    void InitAndAttach(const class AEnsPlayerCharacter* Character);
+
 #pragma region BaseAttack
     /// \brief The weapon's basic attack ability.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
@@ -71,11 +73,23 @@ public:
     UAnimMontage* DeathAnimationMontage = nullptr;
 #pragma endregion
 
-    /// \brief Component representing the weapon model.
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
-    UStaticMeshComponent* Mesh = nullptr;
+    /// \brief Component representing the weapon model per level on the right hand.
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals");
+    TArray<TObjectPtr<UStaticMesh>> MeshRightHandPerLevel;
 
-    /// \brief Name of the socket where the weapon should be attached.
-    UPROPERTY(EditAnywhere, BlueprintReadOnly);
-    FName SocketName;
+    /// \brief Component representing the weapon model per level on the left hand.
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals");
+    TArray<TObjectPtr<UStaticMesh>> MeshLeftHandPerLevel;
+
+    /// \brief Name of the right hand socket where the weapon should be attached.
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals");
+    FName RightHandSocketName;
+
+    /// \brief Name of the left hand socket where the weapon should be attached.
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals");
+    FName LeftHandSocketName;
+
+private:
+    UStaticMeshComponent* RightHandMeshComponent = nullptr;
+    UStaticMeshComponent* LeftHandMeshComponent = nullptr;
 };

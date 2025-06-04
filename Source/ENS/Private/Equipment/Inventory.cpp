@@ -136,9 +136,7 @@ void UInventory::UpdateEquippedSet()
     if (auto& WeaponClass = Weapons[CurrentEquipmentIndex])
     {
         AttachedWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass, FVector(0.0f, 0.0f, 0.0f), FRotator::ZeroRotator);
-        bool bIsAttached = AttachedWeapon->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachedWeapon->SocketName);
-        if (!bIsAttached)
-            UE_LOG(LogInventory, Error, TEXT("Failed to attach weapon to the character mesh."));
+        AttachedWeapon->InitAndAttach(Character);
 
         Character->GetMesh()->MoveIgnoreActors.Add(AttachedWeapon);
         if (UAbilitySystemComponent* AbilitySystem = Character->FindComponentByClass<UAbilitySystemComponent>())
