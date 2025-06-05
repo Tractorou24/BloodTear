@@ -169,7 +169,7 @@ void UInventory::HandleMainAbility()
 
 void UInventory::HandleSet(const uint8_t SetIndex)
 {
-    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex || IsPlayerPlayingAnimation())
+    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex)
         return;
 
     // Cancel the current attack if any
@@ -182,13 +182,4 @@ void UInventory::HandleSet(const uint8_t SetIndex)
     SwapCooldownTimer = 0;
     CurrentEquipmentIndex = SetIndex;
     UpdateEquippedSet();
-}
-
-bool UInventory::IsPlayerPlayingAnimation()
-{
-    if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
-        if (USkeletalMeshComponent* Mesh = Character->GetMesh())
-            if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
-                return AnimInstance->Montage_IsPlaying(nullptr);
-    return false;
 }
