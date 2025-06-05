@@ -47,7 +47,7 @@ public:
     /// \brief The time where player can cancel animation to move or attack again.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
     float BaseSecondaryRecoveryTime = 1.f;
-    
+
     /// \brief The time at which the collision actor is deleted after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     float BaseAttackDestroyTime = 2.f;
@@ -80,6 +80,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death Animation");
     UAnimMontage* DeathAnimationMontage = nullptr;
 #pragma endregion
+
+    /// \brief The max speed applied to the character when this weapon is equipped.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"));
+    float PlayerMaxSpeed = 1.f;
 
     /// \brief Component representing the weapon model per level on the right hand.
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals");

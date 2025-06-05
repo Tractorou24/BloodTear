@@ -20,10 +20,9 @@ AEnsCharacterBase::AEnsCharacterBase()
 
 void AEnsCharacterBase::BeginPlay()
 {
-    Super::BeginPlay();
     AddStartupEffects();
-
     MovementAttributeSet->InitMaxSpeed(GetCharacterMovement()->MaxWalkSpeed);
+    Super::BeginPlay();
 }
 
 void AEnsCharacterBase::OnHit(const float DamageAmount)
