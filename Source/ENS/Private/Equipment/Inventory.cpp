@@ -162,14 +162,18 @@ void UInventory::HandleMainAbility()
 {
     ensure(AttachedWeapon->MainSkill != nullptr && "MainSkill must be set for the weapon.");
 
-    const ACharacter* Character = Cast<ACharacter>(GetOwner());
+    const auto* Character = CastChecked<AEnsPlayerCharacter>(GetOwner());
+    if (Character->IsDead())
+        return;
+
     if (UAbilitySystemComponent* AbilitySystem = Character->FindComponentByClass<UAbilitySystemComponent>())
         AbilitySystem->TryActivateAbilityByClass(AttachedWeapon->MainSkill);
 }
 
 void UInventory::HandleSet(const uint8_t SetIndex)
 {
-    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex)
+    auto* Character = CastChecked<AEnsPlayerCharacter>(GetOwner());
+    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex || Character->IsDead())
         return;
 
     // Cancel the current attack if any

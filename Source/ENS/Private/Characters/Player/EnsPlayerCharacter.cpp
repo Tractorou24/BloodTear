@@ -76,13 +76,11 @@ void AEnsPlayerCharacter::BeginPlay()
 
 void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
 {
-    static bool bCanDie = true;
-    if (!bCanDie)
+    if (bIsDead)
         return;
 
-    APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    DisableInput(PlayerController);
+    GetCharacterMovement()->DisableMovement();
 
     auto Duration = GetMesh()->GetAnimInstance()->Montage_Play(GetInventoryComponent()->GetCurrentWeapon()->DeathAnimationMontage);
     if (Duration == 0.f)
@@ -101,17 +99,17 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
         // Stop all running montages
         GetMesh()->GetAnimInstance()->Montage_Stop(0.f, nullptr);
 
-        EnableInput(PlayerController);
+        GetCharacterMovement()->SetMovementMode(MOVE_Walking);
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
         // Call the parent to reset the attributes
         Super::OnDeath(SourceActor);
-        bCanDie = true; // Allow the player to die again
+        bIsDead = false; // Allow the player to die again
     });
 
     FTimerHandle DeathTimerHandle;
     GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, TimerCallback, Duration, false);
-    bCanDie = false; // Prevents the player from dying multiple times
+    bIsDead = true; // Prevents the player from dying multiple times
 }
 
 void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)
