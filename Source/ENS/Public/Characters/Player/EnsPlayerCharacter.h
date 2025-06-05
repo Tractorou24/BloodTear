@@ -43,6 +43,9 @@ public:
     /// \copydoc AEnsCharacterBase::OnDeath
     virtual void OnDeath(AEnsCharacterBase* SourceActor) override;
 
+    /// \brief Checks if the player is currently dead (i.e. is in death animation).
+    [[nodiscard]] bool IsDead() const { return bIsDead; }
+
     /**
      * \brief Adds \p Amount to the player experience and level-up if required.
      * \param Amount The number of experience points to add.
@@ -124,4 +127,6 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Levels", meta = (AllowPrivateAccess = "true"))
     TArray<int64> ExperienceLevelTransitions;
 #pragma endregion
+
+    bool bIsDead = false;
 };
