@@ -30,10 +30,6 @@
 			"Type": "SymbolFile"
 		},
 		{
-			"Path": "$(EngineDir)/Binaries/Win64/EOSSDK-Win64-Shipping.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
 			"Path": "$(EngineDir)/Binaries/Win64/OpenColorIO_2_3.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -5042,18 +5038,6 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Fab/Binaries/Win64/UnrealEditor-Fab.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Fab/Binaries/Win64/UnrealEditor-Fab.pdb",
-			"Type": "SymbolFile"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Fab/Binaries/Win64/UnrealEditor.modules",
-			"Type": "RequiredResource"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/FastBuildController/Binaries/Win64/UnrealEditor-FastBuildController.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -5519,18 +5503,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/MovieScene/TemplateSequence/Binaries/Win64/UnrealEditor.modules",
-			"Type": "RequiredResource"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Online/EOSShared/Binaries/Win64/UnrealEditor-EOSShared.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Online/EOSShared/Binaries/Win64/UnrealEditor-EOSShared.pdb",
-			"Type": "SymbolFile"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Online/EOSShared/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -26008,10 +25980,6 @@
 			"Type": "DebugNonUFS"
 		},
 		{
-			"Path": "$(EngineDir)/Binaries/Win64/EOSSDK-Win64-Shipping.dll",
-			"Type": "NonUFS"
-		},
-		{
 			"Path": "$(EngineDir)/Binaries/Win64/EpicWebHelper.exe",
 			"Type": "NonUFS"
 		},
@@ -29292,10 +29260,6 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Fab/Fab.uplugin",
-			"Type": "UFS"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/FastBuildController/FastBuildController.uplugin",
 			"Type": "UFS"
 		},
@@ -29373,10 +29337,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Online/Android/OnlineSubsystemGooglePlay/OnlineSubsystemGooglePlay.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Online/EOSShared/EOSShared.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -29658,7 +29618,6 @@
 		"Dataflow",
 		"DatasmithContent",
 		"DumpGPUServices",
-		"EOSShared",
 		"EditorDebugTools",
 		"EditorScriptingUtilities",
 		"EngineAssetDefinitions",
@@ -29667,7 +29626,6 @@
 		"ExampleDeviceProfileSelector",
 		"FMODStudio",
 		"FMODStudioNiagara",
-		"Fab",
 		"FacialAnimation",
 		"FastBuildController",
 		"Fracture",
