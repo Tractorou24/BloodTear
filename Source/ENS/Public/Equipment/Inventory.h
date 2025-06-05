@@ -63,12 +63,6 @@ private:
     UPROPERTY(Transient)
     ABaseArmor* AttachedArmor = nullptr;
 
-    /**
-     * \brief Checks if player is currently playing an animation.
-     * \return `true` if player is playing an animation, `false` otherwise.
-     */
-    [[nodiscard]] bool IsPlayerPlayingAnimation();
-
 #pragma region Swap
     /// \brief Cooldown between 2 swaps.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
