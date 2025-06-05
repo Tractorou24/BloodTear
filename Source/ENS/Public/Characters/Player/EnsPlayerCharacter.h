@@ -86,6 +86,10 @@ public:
      */
     void Move(const FVector2D& MovementVector);
 
+    /// \brief Last vector used for movement, used for dash direction.
+    UPROPERTY(BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+    FVector2D LastMovementVector;
+
 private:
     FGenericTeamId TeamId;
 

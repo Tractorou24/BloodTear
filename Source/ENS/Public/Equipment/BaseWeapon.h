@@ -40,6 +40,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     float BaseAttackSpawnTime = 1.f;
 
+    /// \brief The time where player cannot interact regardless of his inputs.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
+    float BasePrimaryRecoveryTime = 1.f;
+
+    /// \brief The time where player can cancel animation to move or attack again.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
+    float BaseSecondaryRecoveryTime = 1.f;
+    
     /// \brief The time at which the collision actor is deleted after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     float BaseAttackDestroyTime = 2.f;
