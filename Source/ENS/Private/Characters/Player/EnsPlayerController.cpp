@@ -6,12 +6,16 @@
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Utils/MiscCheats.h"
 
 AEnsPlayerController::AEnsPlayerController()
 {
     // Show mouse cursor, so we can click to move
     bShowMouseCursor = true;
     DefaultMouseCursor = EMouseCursor::Default;
+
+    // Set the cheat class for the player controller
+    CheatClass = UMiscCheats::StaticClass();
 }
 
 void AEnsPlayerController::BeginPlay()
