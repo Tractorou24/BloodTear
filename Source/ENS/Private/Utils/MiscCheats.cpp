@@ -16,9 +16,9 @@ void UMiscCheats::Die()
 
 void UMiscCheats::DieForRespawn()
 {
-    const auto* Controller = Cast<AEnsPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-    for (int i = 0; i < Controller->Lives; i++)
-        Die();
+    auto* Controller = Cast<AEnsPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    Controller->Lives = 1;
+    Die();
 }
 
 void UMiscCheats::SpawnAI(const EEnemyType AIToSpawn, const uint8 Number) const
