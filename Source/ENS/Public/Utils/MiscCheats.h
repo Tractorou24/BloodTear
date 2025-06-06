@@ -22,6 +22,16 @@ class ENS_API UMiscCheats : public UCheatManager
 {
     GENERATED_BODY()
 
+#pragma region Player
+    /// \brief Make the player die (i.e. loosing one life)
+    UFUNCTION(Exec)
+    void Die();
+
+    /// \brief Make the player die enough times to restart the game.
+    UFUNCTION(Exec)
+    void DieForRespawn();
+#pragma endregion
+
 #pragma region AI
     /**
      * @brief Command to spawn \p Number AI in front of the player.

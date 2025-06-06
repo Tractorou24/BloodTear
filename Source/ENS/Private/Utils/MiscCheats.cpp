@@ -2,8 +2,24 @@
 
 #include "Utils/MiscCheats.h"
 
-#include "Characters/Enemies/EnsEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "Characters/Enemies/EnsEnemyBase.h"
+#include "Characters/Player/EnsPlayerCharacter.h"
+#include "Characters/Player/EnsPlayerController.h"
+
+void UMiscCheats::Die()
+{
+    auto* Character = Cast<AEnsPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    Character->OnDeath(Character);
+}
+
+void UMiscCheats::DieForRespawn()
+{
+    const auto* Controller = Cast<AEnsPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    for (int i = 0; i < Controller->Lives; i++)
+        Die();
+}
 
 void UMiscCheats::SpawnAI(const EEnemyType AIToSpawn, const uint8 Number) const
 {
