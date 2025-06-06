@@ -36,7 +36,7 @@ AEnsEnemyBase::AEnsEnemyBase()
     UIEnemyInfoComponent->SetWidgetSpace(EWidgetSpace::World);
     UIEnemyInfoComponent->SetDrawSize(FVector2D(500, 500));
 
-    UIEnemyInfoClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/Widget/WB_EnemyInfo"));
+    UIEnemyInfoClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/Widget/WB_EnemyInfo.WB_EnemyInfo_C"));
 }
 
 void AEnsEnemyBase::SetGenericTeamId(const FGenericTeamId& NewTeamID)
