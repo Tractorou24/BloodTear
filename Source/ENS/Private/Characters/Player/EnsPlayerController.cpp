@@ -87,7 +87,7 @@ void AEnsPlayerController::SetupInputComponent()
     }
 
     EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEnsPlayerController::Move);
-    EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AEnsPlayerController::Attack);
+    EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AEnsPlayerController::Attack);
 }
 
 void AEnsPlayerController::Move(const FInputActionValue& Value)
