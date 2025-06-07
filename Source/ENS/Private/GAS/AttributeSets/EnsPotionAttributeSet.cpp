@@ -15,5 +15,6 @@ void UEnsPotionAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
         // Reset Meta attribute
         SetPotionUse(0.f);
         SetHealthQuantity(FMath::Clamp(NewHealthPotionQuantity, 0.0f, GetHealthMaxQuantity()));
+        OnHealthPotionUsed.Broadcast(GetHealthQuantity());
     }
 }

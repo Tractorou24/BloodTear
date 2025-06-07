@@ -10,6 +10,8 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPotionAttributeSet, Log, All);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPotionUsed, int, Remaining);
+
 /**
  * \brief The attributes storage for any object having Potion inside the GAS.
  */
@@ -24,6 +26,10 @@ public:
      * \param Data The data related to the gameplay effect
      */
     virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
+    /// \brief Called when the value of \ref HealthQuantity changes.
+    UPROPERTY(BlueprintAssignable, Category = "HealthPotion")
+    FOnPotionUsed OnHealthPotionUsed;
 
     /// \brief The current Health Potion quantity
     UPROPERTY(BlueprintReadOnly, Category = "HealthPotion")
