@@ -7,30 +7,13 @@
 
 #include "BaseWeapon.generated.h"
 
-/**
- * \brief Base class for any weapon contained in the inventory and be attached to a character.
- */
-UCLASS()
-class ENS_API ABaseWeapon : public AActor
+USTRUCT(BlueprintType)
+struct FAnimData
 {
     GENERATED_BODY()
-public:
-    explicit ABaseWeapon();
-
-    void InitAndAttach(const class AEnsPlayerCharacter* Character);
-
-#pragma region BaseAttack
-    /// \brief The weapon's basic attack ability.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
-
-    /// \brief The type of actor to spawn (defines collision & range)
+    
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     TSubclassOf<AActor> BaseAttackCollisionActor;
-
-    /// \brief The animation montage to play when the base attack is activated.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    UAnimMontage* BaseAttackAnimationMontage;
 
     /// \brief The damage applied to the target during the attack.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
@@ -51,6 +34,42 @@ public:
     /// \brief The time at which the collision actor is deleted after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     float BaseAttackDestroyTime = 2.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+    UAnimMontage* Montage = nullptr;
+};
+/**
+ * \brief Base class for any weapon contained in the inventory and be attached to a character.
+ */
+UCLASS()
+class ENS_API ABaseWeapon : public AActor
+{
+    GENERATED_BODY()
+public:
+    explicit ABaseWeapon();
+
+    void InitAndAttach(const class AEnsPlayerCharacter* Character);
+
+    /// \brief Get the current Animation used for attack and all is data.
+    UFUNCTION(BlueprintCallable)
+    FAnimData GetCurrentAnimationData();
+
+    /// \brief Increment \ref AttackComboIndex.
+    UFUNCTION(BlueprintCallable)
+    void IncrementCombo();
+
+#pragma region BaseAttack
+    /// \brief The weapon's basic attack ability.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+    TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
+    
+    /// \brief The animation montage to play when the base attack is activated.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+    TArray<FAnimData> BaseAttackAnimationMontages;
+    
+    /// \brief The index of the combo to use inside \ref BaseAttackAnimationMontages.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
+    int AttackComboIndex = 0;
 
     /// \brief The range of the attack. (i.e. the distance at which the player stops moving and attacks)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");

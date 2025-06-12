@@ -30,3 +30,13 @@ void ABaseWeapon::InitAndAttach(const AEnsPlayerCharacter* Character)
         LeftHandMeshComponent->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, LeftHandSocketName);
     }
 }
+
+FAnimData ABaseWeapon::GetCurrentAnimationData()
+{
+    return BaseAttackAnimationMontages[AttackComboIndex];
+}
+
+void ABaseWeapon::IncrementCombo()
+{
+    AttackComboIndex = (AttackComboIndex + 1 ) % BaseAttackAnimationMontages.Num();
+}

@@ -116,6 +116,9 @@ private:
     /// \brief Whether an attack can be buffered or not. (e.g. between collision is spawned and destroyed)
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
     bool bCanBuffer = false;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Attack", meta = (AllowPrivateAccess = "true"))
+    bool bIsReattacking = false;
 #pragma endregion
 
 #pragma region Levels
