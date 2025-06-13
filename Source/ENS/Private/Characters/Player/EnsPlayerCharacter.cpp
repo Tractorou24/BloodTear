@@ -1,6 +1,8 @@
 // Copyright (c) 2024-2025, BloodTear contributors. All rights reserved.
 
 #include "Characters/Player/EnsPlayerCharacter.h"
+
+#include "Camera/CameraShakeSourceComponent.h"
 #include "Characters/Enemies/EnsEnemyBase.h"
 #include "Equipment/BaseWeapon.h"
 #include "Equipment/Inventory.h"
@@ -32,6 +34,8 @@ AEnsPlayerCharacter::AEnsPlayerCharacter()
     GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
     Inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+
+    CameraShakeSourceComponent = CreateDefaultSubobject<UCameraShakeSourceComponent>(TEXT("CameraShakeComponent"));
 
     PotionAttributeSet = CreateDefaultSubobject<UEnsPotionAttributeSet>(TEXT("PotionAttributeSet"));
 

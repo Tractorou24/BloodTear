@@ -7,6 +7,8 @@
 
 #include "BaseWeapon.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogBaseWeapon, Log, All);
+
 USTRUCT(BlueprintType)
 struct FAnimData
 {
@@ -59,6 +61,10 @@ public:
     void IncrementCombo();
 
 #pragma region BaseAttack
+    /// \brief Get the weapon's basic attack camera shake depending on current combo index.
+    UFUNCTION(BlueprintCallable)
+    TSubclassOf<UCameraShakeBase> GetCurrentCameraShake();
+    
     /// \brief The weapon's basic attack ability.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     TSubclassOf<class UEnsGameplayAbilityBase> BaseAttackAbility;
@@ -66,6 +72,10 @@ public:
     /// \brief The animation montage to play when the base attack is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     TArray<FAnimData> BaseAttackAnimationMontages;
+
+    /// \brief The weapon's basic attack camera shakes (depending on combo).
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
+    TArray<TSubclassOf<UCameraShakeBase>> CameraShakes;
     
     /// \brief The index of the combo to use inside \ref BaseAttackAnimationMontages.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")

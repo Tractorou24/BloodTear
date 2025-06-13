@@ -3,6 +3,8 @@
 #include "Equipment/BaseWeapon.h"
 #include "Characters/Player/EnsPlayerCharacter.h"
 
+DEFINE_LOG_CATEGORY(LogBaseWeapon)
+
 ABaseWeapon::ABaseWeapon()
 {
     LeftHandMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftHandWeaponMesh"));
@@ -39,4 +41,12 @@ FAnimData ABaseWeapon::GetCurrentAnimationData()
 void ABaseWeapon::IncrementCombo()
 {
     AttackComboIndex = (AttackComboIndex + 1 ) % BaseAttackAnimationMontages.Num();
+}
+
+TSubclassOf<UCameraShakeBase> ABaseWeapon::GetCurrentCameraShake()
+{
+    if (CameraShakes.IsValidIndex(AttackComboIndex))
+        return CameraShakes[AttackComboIndex];
+    UE_LOG(LogBaseWeapon, Error, TEXT("Can't find a camera shake for current combo index."));
+    return UCameraShakeBase::StaticClass();
 }
