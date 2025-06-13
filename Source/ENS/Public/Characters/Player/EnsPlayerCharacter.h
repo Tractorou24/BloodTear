@@ -100,6 +100,9 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
     class UInventory* Inventory;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+    UCameraShakeSourceComponent* CameraShakeSourceComponent;
+
     /// \brief The attribute set to hold potions data.
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
     class UEnsPotionAttributeSet* PotionAttributeSet;
