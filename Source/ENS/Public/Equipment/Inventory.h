@@ -31,6 +31,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     [[nodiscard]] class ABaseWeapon* GetCurrentWeapon();
 
+    /// \brief Get currently attached equipment index.
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    int GetCurrentEquipmentIndex() const;
+
     /// \brief Get currently attached armor.
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     [[nodiscard]] class ABaseArmor* GetCurrentArmor();
