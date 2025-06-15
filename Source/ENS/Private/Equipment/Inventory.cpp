@@ -89,6 +89,11 @@ ABaseWeapon* UInventory::GetCurrentWeapon()
     return AttachedWeapon;
 }
 
+int UInventory::GetCurrentEquipmentIndex() const
+{
+    return CurrentEquipmentIndex;
+}
+
 ABaseArmor* UInventory::GetCurrentArmor()
 {
     return AttachedArmor;
