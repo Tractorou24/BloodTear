@@ -97,7 +97,7 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
     FTimerDelegate TimerCallback;
     TimerCallback.BindLambda([=, this] {
         // Find and move to the player start
-        const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController());
+        const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController(),FString("Checkpoint"));
         SetActorLocation(PlayerStart->GetActorLocation());
         SetActorRotation(PlayerStart->GetActorRotation());
 
