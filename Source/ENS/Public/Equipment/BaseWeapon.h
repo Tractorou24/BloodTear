@@ -76,6 +76,10 @@ public:
     /// \brief The weapon's basic attack camera shakes (depending on combo).
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
     TArray<TSubclassOf<UCameraShakeBase>> CameraShakes;
+
+    /// \brief Defines the knockback forces depending on level (FScalableFloat) and combo (TArray) for this weapon.
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Knockbacks")
+    TArray<FScalableFloat> KnockbackForces;
     
     /// \brief The index of the combo to use inside \ref BaseAttackAnimationMontages.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")

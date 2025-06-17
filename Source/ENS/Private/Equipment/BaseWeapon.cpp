@@ -1,7 +1,11 @@
 ﻿// Copyright (c) 2024-2025, BloodTear contributors. All rights reserved.
 
 #include "Equipment/BaseWeapon.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Characters/Player/EnsPlayerCharacter.h"
+#include "GAS/EnsGameplayAbilityBase.h"
 
 DEFINE_LOG_CATEGORY(LogBaseWeapon)
 
@@ -30,6 +34,14 @@ void ABaseWeapon::InitAndAttach(const AEnsPlayerCharacter* Character)
     {
         LeftHandMeshComponent->SetStaticMesh(LeftHandMesh);
         LeftHandMeshComponent->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, LeftHandSocketName);
+    }
+
+    UAbilitySystemComponent* Asc = Character->GetAbilitySystemComponent();
+    TArray<FGameplayAbilitySpec*> Abilities;
+    Asc->GetActivatableGameplayAbilitySpecsByAllMatchingTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.BaseAttack"))),Abilities);
+    if (Abilities.IsValidIndex(0))
+    {
+        Cast<UEnsGameplayAbilityBase>(Abilities[0]->Ability)->SetKnockBackForces(KnockbackForces);
     }
 }
 
