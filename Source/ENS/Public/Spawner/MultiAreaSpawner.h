@@ -17,33 +17,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNewWave, int, WaveNumber);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpawnerFinished);
 
 /**
- * \brief Distribution of enemies to spawn on a specific area.
- */
-USTRUCT(BlueprintType)
-struct FSpawnDistribution
-{
-    GENERATED_BODY()
-
-    /// \brief Index of the spawn area. `-1` if not set/invalid.
-    int32 Index = -1;
-
-    /// \brief Number of Imps to spawn.
-    UPROPERTY()
-    int32 Imps = 0;
-
-    /// \brief Number of Skull Fire to spawn.
-    UPROPERTY()
-    int32 SkullFire = 0;
-
-    /// \brief Number of Skull Kamikaze to spawn.
-    UPROPERTY()
-    int32 SkullKamikaze = 0;
-
-    /// \return The total number of enemies to spawn.
-    int32 GetTotal() const { return Imps + SkullFire + SkullKamikaze; }
-};
-
-/**
  * \brief A spawner that can have multiple spawn areas and a trigger box to activate it.
  */
 UCLASS()
@@ -96,6 +69,9 @@ protected:
     /// \brief Get indexes of active spawn areas. (i.e. areas that are further that \ref SpawnDistance from the player)
     [[nodiscard]] TArray<uint32> GetActiveSpawnAreas() const;
 
+    /// \brief Get indexes of all areas that have an enemy to spawn according to \ref SpawnInformations.
+    [[nodiscard]] TArray<uint32> GetSpawnAreas() const;
+    
     /// \brief Number of spawn areas (minimum 1).
     UPROPERTY(EditAnywhere, Category = "Spawning", Meta = (ClampMin = "1"))
     int32 NumSpawnAreas = 1;
@@ -123,25 +99,10 @@ protected:
     UBoxComponent* TriggerBox;
 #pragma endregion
 
-    /**
-     * \brief Whether the spawner should spawn waves of enemies infinitely or not.
-     *
-     * If `true`, the spawner will keep spawning waves of enemies indefinitely, restarting from wave 0 after the last wave.
-     * If `false`, the spawner will stop spawning enemies after the last wave.
-     */
-    UPROPERTY(EditAnywhere, Category = "Spawning")
-    bool bIsInfinite = false;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Spawning")
-    TSubclassOf<AEnsEnemyBase> ImpClass;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Spawning")
-    TSubclassOf<AEnsEnemyBase> SkullKamikazeClass;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Spawning")
-    TSubclassOf<AEnsEnemyBase> SkullFireClass;
-
 private:
+    /// \brief Map containing the enemies to spawn in each spawn area.
+    TMap<int32, TArray<TSubclassOf<AEnsEnemyBase>>> SpawnInformations;
+    
     UFUNCTION()
     void OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -150,15 +111,6 @@ private:
 
     /// \brief Update the trigger box of the spawner.
     void UpdateTrigger();
-
-    /**
-     * \brief Distributes a number of specified enemies across all different active spawn areas.
-     * \param Imps Number of imps.
-     * \param SkullFire Number of Skull Fire.
-     * \param SkullKamikaze Number of Skull Kamikaze.
-     * \return Distribution of enemies to spawn across the active spawning areas.
-     */
-    TArray<FSpawnDistribution> DistributeEnemies(int32 Imps, int32 SkullFire, int32 SkullKamikaze);
 
     /// \brief Spawns the wave of enemies specified by `WaveNumber + 1`.
     void SpawnWave();
@@ -171,6 +123,9 @@ private:
      */
     void SpawnEnemies(const TSubclassOf<AEnsEnemyBase>& ActorToSpawn, int32 AreaIndex, int32 Count);
 
+    /// \brief Spawns enemies one enemy in a random number of spawn areas available.
+    void SpawnEnemiesInRandomAreas();
+
 #if WITH_EDITOR
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
@@ -178,9 +133,19 @@ private:
     /// \brief The global wave number across all spawners.
     inline static int GlobalWaveNumber = 0;
 
+    /// \brief Delay between each spawn of enemy
+    float SpawnDelay = 1.5f;
+    
     /// \brief Timer until the next wave of enemies is spawned.
     float Timer = 1000.0f;
 
+    /// \brief Timer used to spawn enemies according to \ref SpawnDelay.
+    float SpawnTimer = 0.0f;
+    
     uint16 WaveNumber = 0;
     uint32 CurrentEnemies = 0;
+    
+    
 };
+
+
