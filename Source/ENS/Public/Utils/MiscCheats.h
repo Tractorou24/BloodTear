@@ -30,6 +30,10 @@ class ENS_API UMiscCheats : public UCheatManager
     /// \brief Make the player die enough times to restart the game.
     UFUNCTION(Exec)
     void DieForRespawn();
+
+    /// \brief Applies \p Amount damage to the player.
+    UFUNCTION(Exec)
+    void Damage(int Amount);
 #pragma endregion
 
 #pragma region AI

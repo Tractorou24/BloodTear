@@ -1,12 +1,12 @@
 // Copyright (c) 2024-2025, BloodTear contributors. All rights reserved.
 
 #include "Utils/MiscCheats.h"
-
-#include "Kismet/GameplayStatics.h"
-
 #include "Characters/Enemies/EnsEnemyBase.h"
 #include "Characters/Player/EnsPlayerCharacter.h"
 #include "Characters/Player/EnsPlayerController.h"
+
+#include "AbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMiscCheats::Die()
 {
@@ -19,6 +19,21 @@ void UMiscCheats::DieForRespawn()
     auto* Controller = Cast<AEnsPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
     Controller->Lives = 1;
     Die();
+}
+
+void UMiscCheats::Damage(const int Amount)
+{
+    auto* Character = Cast<AEnsPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    FGameplayEffectContextHandle EffectContext = Character->GetAbilitySystemComponent()->MakeEffectContext();
+    EffectContext.AddSourceObject(this);
+
+    const TSubclassOf<UGameplayEffect> DamageEffect = StaticLoadClass(UGameplayEffect::StaticClass(), nullptr, TEXT("/Game/Characters/Player/Abilities/DevelopperTests/BPGE_Damage.BPGE_Damage_C"));
+    const FGameplayEffectSpecHandle NewHandle = Character->GetAbilitySystemComponent()->MakeOutgoingSpec(DamageEffect, 0, EffectContext);
+    if (NewHandle.IsValid())
+    {
+        NewHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("Ability.Damage"), Amount);
+        Character->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), Character->GetAbilitySystemComponent());
+    }
 }
 
 void UMiscCheats::SpawnAI(const EEnemyType AIToSpawn, const uint8 Number) const
