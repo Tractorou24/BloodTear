@@ -2,6 +2,27 @@
 
 #include "GAS/EnsGameplayAbilityBase.h"
 
+#include "AbilitySystemComponent.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToActorForce.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToActorForce.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToActorForce.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToForce.h"
+#include "Characters/Enemies/EnsEnemyBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/RootMotionSource.h"
+
+DEFINE_LOG_CATEGORY(LogEnsGameplayAbilityBase)
+
+void UEnsGameplayAbilityBase::BeginDestroy()
+{
+    Super::BeginDestroy();
+}
+
+void UEnsGameplayAbilityBase::SetKnockBackForces(const TArray<FScalableFloat>& InKnockbackForces)
+{
+    KnockbackForces = InKnockbackForces;
+}
+
 AController* UEnsGameplayAbilityBase::GetControllerFromActorInfo() const
 {
     if (!CurrentActorInfo)
@@ -48,5 +69,21 @@ void UEnsGameplayAbilityBase::ApplyCooldown(const FGameplayAbilitySpecHandle Han
         SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(CooldownTags);
         SpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Ability.Cooldown")), CooldownDuration.GetValueAtLevel(GetAbilityLevel()));
         FActiveGameplayEffectHandle AGEHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+    }
+}
+
+void UEnsGameplayAbilityBase::ApplyKnockback(AActor* Target, uint8 Level, uint8 ComboStep)
+{
+    if (KnockbackForces.IsValidIndex(ComboStep))
+    {
+        AEnsEnemyBase* TargetCharacter = Cast<AEnsEnemyBase>(Target);
+        const float KnockbackForce = KnockbackForces[ComboStep].GetValueAtLevel(Level);
+        const FVector TargetLocation = Target->GetActorLocation();
+        const FVector TargetKnockedbackLocation = ((TargetLocation - GetAvatarActorFromActorInfo()->GetActorLocation()).GetSafeNormal() * 0.33 + GetAvatarActorFromActorInfo()->GetActorForwardVector()).GetSafeNormal() * KnockbackForce;
+        TargetCharacter->GetCharacterMovement()->Launch(TargetKnockedbackLocation);
+    }
+    else
+    {
+        UE_LOG(LogEnsGameplayAbilityBase, Error, TEXT("Can't find any knockback scalablefloat at the provided ComboStep."));
     }
 }
