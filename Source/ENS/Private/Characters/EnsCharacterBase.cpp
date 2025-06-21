@@ -3,6 +3,7 @@
 #include "Characters/EnsCharacterBase.h"
 #include "GAS/AttributeSets/EnsHealthAttributeSet.h"
 #include "GAS/AttributeSets/EnsMovementAttributeSet.h"
+#include "GAS/AttributeSets/EnsPotionAttributeSet.h"
 #include "GAS/EnsAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectTypes.h"
@@ -35,6 +36,9 @@ void AEnsCharacterBase::OnDeath(AEnsCharacterBase* SourceActor)
     OnDeathDelegate.Broadcast();
     // Reset all attributes
     AddStartupEffects();
+
+    const auto PotionAttribute = CastChecked<UEnsPotionAttributeSet>(AbilitySystemComponent->GetAttributeSet(UEnsPotionAttributeSet::StaticClass()));
+    PotionAttribute->OnHealthPotionUsed.Broadcast(PotionAttribute->GetHealthQuantity());
 }
 
 UAbilitySystemComponent* AEnsCharacterBase::GetAbilitySystemComponent() const

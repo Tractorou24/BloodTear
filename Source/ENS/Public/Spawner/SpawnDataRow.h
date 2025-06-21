@@ -2,10 +2,26 @@
 
 #pragma once
 
+#include "Characters/Enemies/EnsEnemyBase.h"
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
 
 #include "SpawnDataRow.generated.h"
+
+/// \brief Data for spawning an enemy.
+USTRUCT(BlueprintType)
+struct ENS_API FEnemyData
+{
+    GENERATED_BODY()
+
+    /// \brief Enemy class to spawn.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+    TSubclassOf<AEnsEnemyBase> EnemyClass;
+
+    /// \brief Amount of enemies to spawn.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 Amount;
+};
 
 /**
  * \brief Data row of a data table containing data for spawning waves of enemies.
@@ -16,19 +32,15 @@ struct ENS_API FSpawnDataRow : public FTableRowBase
     GENERATED_BODY()
 
 public:
-    /// \brief Number of Imps to spawn.
+    /// \brief Enemies to spawn.
     UPROPERTY(EditAnywhere)
-    int32 Imps;
-
-    /// \brief Number of Skull Kamikaze to spawn.
-    UPROPERTY(EditAnywhere)
-    int32 SkullKamikaze;
-
-    /// \brief Number of Skull Fire to spawn.
-    UPROPERTY(EditAnywhere)
-    int32 SkullFire;
-
+    TArray<FEnemyData> EnemiesToSpawn;
+    
     /// \brief Duration of the wave in seconds.
     UPROPERTY(EditAnywhere, meta = (Units = "s"))
     int32 Time;
+
+    /// \brief Delay between each spawn in seconds.
+    UPROPERTY(EditAnywhere, meta = (Units = "s"))
+    float SpawnDelay = 1.5f;
 };

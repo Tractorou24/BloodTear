@@ -3,6 +3,7 @@
 #include "Spawner/MultiAreaSpawner.h"
 #include "Characters/Player/EnsPlayerCharacter.h"
 #include "Components/BoxComponent.h"
+#include "Utils/ArrayUtils.h"
 #include "Spawner/SpawnDataRow.h"
 
 #include "DrawDebugHelpers.h"
@@ -121,6 +122,13 @@ void AMultiAreaSpawner::Tick(float DeltaTime)
     if (!bIsActive)
         return;
 
+    SpawnTimer += DeltaTime;
+    if (SpawnTimer > SpawnDelay)
+    {
+        SpawnTimer = 0;
+        SpawnEnemiesInRandomAreas();
+    }
+    
     Timer -= DeltaTime;
     if (Timer <= 0)
         SpawnWave();
@@ -148,6 +156,17 @@ TArray<uint32> AMultiAreaSpawner::GetActiveSpawnAreas() const
     return ActiveSpawnAreas;
 }
 
+TArray <uint32> AMultiAreaSpawner::GetSpawnAreas() const
+{
+    TArray<uint32> ActiveSpawnAreas;
+
+    for (int i = 0; i < SpawnAreas.Num(); ++i)
+        if (SpawnInformations[i].Num() > 0)
+            ActiveSpawnAreas.Add(i);
+    
+    return ActiveSpawnAreas;
+}
+
 void AMultiAreaSpawner::OnEnemyDestroyed()
 {
     --CurrentEnemies;
@@ -162,7 +181,10 @@ void AMultiAreaSpawner::OnEnemyDestroyed()
 void AMultiAreaSpawner::BeginPlay()
 {
     Super::BeginPlay();
-
+    for (int32 i = 0; i < SpawnAreas.Num(); ++i)
+    {
+        SpawnInformations.Add(i, TArray<TSubclassOf<AEnsEnemyBase>>());
+    }
     if (bHasTrigger)
     {
         TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AMultiAreaSpawner::OnTriggerOverlapBegin);
@@ -186,90 +208,62 @@ void AMultiAreaSpawner::PostEditChangeProperty(FPropertyChangedEvent& PropertyCh
 }
 #endif
 
-TArray<FSpawnDistribution> AMultiAreaSpawner::DistributeEnemies(const int32 Imps, const int32 SkullFire, const int32 SkullKamikaze)
-{
-    const auto ActiveSpawnAreas = GetActiveSpawnAreas();
-    TArray<FSpawnDistribution> Distributions;
-    if (SpawnAreas.Num() == 0)
-        return Distributions;
-
-    Distributions.SetNum(ActiveSpawnAreas.Num());
-    for (int32 i = 0; i < ActiveSpawnAreas.Num(); ++i)
-        Distributions[i].Index = ActiveSpawnAreas[i];
-
-    const int32 TotalEnemies = Imps + SkullFire + SkullKamikaze;
-    const int32 MaxEnemiesPerArea = FMath::CeilToInt(TotalEnemies * 0.6f);
-    TArray<int32> RemainingEnemies;
-    for (int32 i = 0; i < Imps; ++i)
-        RemainingEnemies.Add(0); // 0 for Imps
-    for (int32 i = 0; i < SkullFire; ++i)
-        RemainingEnemies.Add(1); // 1 for SkullFire
-    for (int32 i = 0; i < SkullKamikaze; ++i)
-        RemainingEnemies.Add(2); // 2 for SkullKamikaze
-
-    // Shuffle the array to randomize monster distribution
-    for (int32 i = RemainingEnemies.Num() - 1; i > 0; --i)
-    {
-        const int32 SwapIndex = FMath::RandRange(0, i);
-        RemainingEnemies.Swap(i, SwapIndex);
-    }
-
-    for (const int32 EnemyType : RemainingEnemies)
-    {
-        bool Placed = false;
-        while (!Placed)
-        {
-            const int32 DistributionIndex = FMath::RandRange(0, ActiveSpawnAreas.Num() - 1);
-
-            // Check if this area hasn't reached the maximum
-            if (Distributions[DistributionIndex].GetTotal() < MaxEnemiesPerArea || ActiveSpawnAreas.Num() == 1)
-            {
-                switch (EnemyType)
-                {
-                    case 0:
-                        Distributions[DistributionIndex].Imps++;
-                        break;
-                    case 1:
-                        Distributions[DistributionIndex].SkullFire++;
-                        break;
-                    case 2:
-                        Distributions[DistributionIndex].SkullKamikaze++;
-                        break;
-                    default:
-                        break;
-                }
-                Placed = true;
-            }
-        }
-    }
-    return Distributions;
-}
-
 void AMultiAreaSpawner::SpawnWave()
 {
     if (WaveNumber >= SpawnData->GetRowMap().Num())
     {
-        if (!bIsInfinite)
-        {
-            bIsActive = false;
-            return;
-        }
-        WaveNumber = 0;
+        bIsActive = false;
+        return;
     }
 
     const FSpawnDataRow* Row = SpawnData->FindRow<FSpawnDataRow>(FName(FString::FromInt(++WaveNumber)), "");
-    TArray<FSpawnDistribution> SpawnDistributions = DistributeEnemies(Row->Imps, Row->SkullFire, Row->SkullKamikaze);
-
-    for (int32 i = 0; i < SpawnDistributions.Num(); i++)
+    TArray<TSubclassOf<AEnsEnemyBase>> Enemies;
+    for (auto EnemyData : Row->EnemiesToSpawn)
     {
-        SpawnEnemies(ImpClass, SpawnDistributions[i].Index, SpawnDistributions[i].Imps);
-        SpawnEnemies(SkullFireClass, SpawnDistributions[i].Index, SpawnDistributions[i].SkullFire);
-        SpawnEnemies(SkullKamikazeClass, SpawnDistributions[i].Index, SpawnDistributions[i].SkullKamikaze);
+        for (int32 i = 0; i < EnemyData.Amount; ++i)
+            Enemies.Add(EnemyData.EnemyClass);
+        UE_LOG(LogSpawners, Warning, TEXT("Cannot get player character in SpawnEnemies() of spawner %i"), Enemies.Num());
     }
-    CurrentEnemies += Row->Imps + Row->SkullFire + Row->SkullKamikaze;
-    Timer = Row->Time;
 
+    CurrentEnemies = Enemies.Num();
+    ArrayUtils::ShuffleArray(Enemies);
+    int32 MaxEnemies = FMath::CeilToInt(0.6f * Enemies.Num());
+
+    TArray<int32> SpawnIndexes;
+    for (int32 i = 0; i < SpawnAreas.Num(); ++i)
+    {
+        SpawnInformations[i].Empty();
+        SpawnIndexes.Add(i);
+    }
+    
+    for (const auto& enemy: Enemies)
+    {
+        bool Placed = false;
+        while (!Placed)
+        {
+            const int32 DistributionIndex = FMath::RandRange(0, SpawnIndexes.Num() - 1);
+            if (SpawnInformations[SpawnIndexes[DistributionIndex]].Num() < MaxEnemies || SpawnIndexes.Num() == 1)
+            {
+                SpawnInformations[SpawnIndexes[DistributionIndex]].Add(enemy);
+                Placed = true;
+            }
+            else
+            {
+                SpawnIndexes.RemoveAt(DistributionIndex);
+            }
+        }
+    }
+
+    for (const auto& enemyData: SpawnInformations)
+    {
+        UE_LOG(LogSpawners, Warning, TEXT("Cannot get player character in SpawnEnemies() of spawner %i"),enemyData.Value.Num());
+    }
+
+    SpawnDelay = Row->SpawnDelay;
+    Timer = Row->Time;
+    SpawnTimer = 0;
     GlobalWaveNumber++;
+    SpawnEnemiesInRandomAreas();
     OnNewWave.Broadcast(GlobalWaveNumber);
 }
 
@@ -296,5 +290,37 @@ void AMultiAreaSpawner::SpawnEnemies(const TSubclassOf<AEnsEnemyBase>& ActorToSp
 
         AEnsEnemyBase* Enemy = GetWorld()->SpawnActor<AEnsEnemyBase>(ActorToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
         Enemy->OnEnemyDestroyed.AddDynamic(this, &AMultiAreaSpawner::OnEnemyDestroyed);
+    }
+}
+
+void AMultiAreaSpawner::SpawnEnemiesInRandomAreas()
+{
+    auto* Character = Cast<const AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!Character)
+    {
+        UE_LOG(LogSpawners, Warning, TEXT("Player character not found!"));
+        return;
+    }
+    
+    auto AvailableSpawners = GetSpawnAreas();
+
+    if (AvailableSpawners.Num() == 0)
+        return;
+
+    auto ActiveSpawners = GetActiveSpawnAreas();
+    int32 SpawnersToSpawn = FMath::RandRange(1, AvailableSpawners.Num() - 1);
+    ArrayUtils::ShuffleArray(AvailableSpawners);
+    
+    for (int i = 0; i < SpawnersToSpawn; ++i)
+    {
+        if (!ActiveSpawners.Contains(AvailableSpawners[i]))
+        {
+            int32 SpawnerIndex = FMath::RandRange(0, ActiveSpawners.Num() - 1);
+            SpawnEnemies(SpawnInformations[AvailableSpawners[i]].Pop(), ActiveSpawners[SpawnerIndex], 1);
+        }
+        else
+        {
+            SpawnEnemies(SpawnInformations[AvailableSpawners[i]].Pop(), AvailableSpawners[i], 1);
+        }
     }
 }
