@@ -21,9 +21,17 @@ struct FAnimData
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     FScalableFloat BaseAttackDamage;
 
-    /// \brief The time at which the collision actor spawns after the ability is activated.
+    /// \brief The time at which the collision actor is deleted after the ability is activated.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackSpawnTime = 1.f;
+    float BaseAttackDestroyTime = 2.f;
+
+    /// \brief The time at which the collision actor is spawned.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+    float BaseAttackStartupTime = 1.f;
+
+    /// \brief The time at which the attack frames are played.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
+    float BaseAttackActiveTime = 1.f;
 
     /// \brief The time where player cannot interact regardless of his inputs.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
@@ -33,9 +41,7 @@ struct FAnimData
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack")
     float BaseSecondaryRecoveryTime = 1.f;
 
-    /// \brief The time at which the collision actor is deleted after the ability is activated.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
-    float BaseAttackDestroyTime = 2.f;
+   
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Attack");
     UAnimMontage* Montage = nullptr;
