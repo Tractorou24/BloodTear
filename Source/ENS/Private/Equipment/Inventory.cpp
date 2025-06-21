@@ -13,6 +13,13 @@
 
 DEFINE_LOG_CATEGORY(LogInventory);
 
+[[nodiscard]] bool IsSkillActive(const AEnsPlayerCharacter* Character)
+{
+    return Character->GetAbilitySystemComponent()->GetActivatableAbilities().FindByPredicate([](const FGameplayAbilitySpec& Spec) {
+        return Spec.Ability->GetClass()->IsChildOf(UEnsSkillBase::StaticClass()) && Spec.IsActive();
+    }) != nullptr;
+}
+
 UInventory::UInventory()
 {
     PrimaryComponentTick.bCanEverTick = true;
@@ -178,7 +185,7 @@ void UInventory::HandleMainAbility()
 void UInventory::HandleSet(const uint8_t SetIndex)
 {
     auto* Character = CastChecked<AEnsPlayerCharacter>(GetOwner());
-    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex || Character->IsDead())
+    if (SwapCooldownTimer <= SwapCooldown || CurrentEquipmentIndex == SetIndex || Character->IsDead() || IsSkillActive(Character))
         return;
 
     // Cancel the current attack if any
