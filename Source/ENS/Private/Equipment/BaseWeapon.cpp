@@ -60,5 +60,5 @@ TSubclassOf<UCameraShakeBase> ABaseWeapon::GetCurrentCameraShake()
     if (CameraShakes.IsValidIndex(AttackComboIndex))
         return CameraShakes[AttackComboIndex];
     UE_LOG(LogBaseWeapon, Error, TEXT("Can't find a camera shake for current combo index."));
-    return UCameraShakeBase::StaticClass();
+    return nullptr;
 }
