@@ -225,7 +225,7 @@ void AMultiAreaSpawner::SpawnWave()
         UE_LOG(LogSpawners, Warning, TEXT("Cannot get player character in SpawnEnemies() of spawner %i"), Enemies.Num());
     }
 
-    CurrentEnemies = Enemies.Num();
+    CurrentEnemies += Enemies.Num();
     ArrayUtils::ShuffleArray(Enemies);
     int32 MaxEnemies = FMath::CeilToInt(0.6f * Enemies.Num());
 
