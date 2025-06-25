@@ -34,6 +34,7 @@ public:
     virtual void OnHit(float DamageAmount);
 
     /// \brief Called when the character dies.
+    UFUNCTION(BlueprintCallable)
     virtual void OnDeath(AEnsCharacterBase* SourceActor);
 
     UPROPERTY(BlueprintAssignable)
