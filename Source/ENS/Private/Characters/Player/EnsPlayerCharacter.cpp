@@ -4,6 +4,7 @@
 
 #include "Camera/CameraShakeSourceComponent.h"
 #include "Characters/Enemies/EnsEnemyBase.h"
+#include "Characters/Player/EnsPlayerController.h"
 #include "Equipment/BaseWeapon.h"
 #include "Equipment/Inventory.h"
 #include "GAS/AttributeSets/EnsPotionAttributeSet.h"
@@ -84,6 +85,8 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
     if (bIsDead)
         return;
 
+    Cast<AEnsPlayerController>(GetController())->SetInputMode(FInputModeUIOnly());
+    
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     GetCharacterMovement()->DisableMovement();
 
@@ -110,6 +113,7 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
         // Call the parent to reset the attributes
         Super::OnDeath(SourceActor);
         bIsDead = false; // Allow the player to die again
+        Cast<AEnsPlayerController>(GetController())->SetInputMode(FInputModeGameAndUI());
     });
 
     FTimerHandle DeathTimerHandle;
