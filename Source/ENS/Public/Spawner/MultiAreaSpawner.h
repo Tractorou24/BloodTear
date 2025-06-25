@@ -56,6 +56,10 @@ public:
     UPROPERTY(EditAnywhere, Category = "Spawning")
     UDataTable* SpawnData;
 
+    /// \brief Max number of enemies remaining alive before spawning a new wave.
+    UPROPERTY(EditAnywhere, Category = "Spawning")
+    uint32 MaxEnemiesBeforeSpawn = 3;
+
 protected:
     virtual void BeginPlay() override;
     virtual void OnConstruction(const FTransform& Transform) override;

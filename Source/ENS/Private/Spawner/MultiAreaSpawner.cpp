@@ -130,7 +130,7 @@ void AMultiAreaSpawner::Tick(float DeltaTime)
     }
     
     Timer -= DeltaTime;
-    if (Timer <= 0)
+    if (Timer <= 0 && CurrentEnemies <= MaxEnemiesBeforeSpawn)
         SpawnWave();
 }
 
