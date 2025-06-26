@@ -86,7 +86,7 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
         return;
 
     Cast<AEnsPlayerController>(GetController())->SetInputMode(FInputModeUIOnly());
-    
+
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     GetCharacterMovement()->DisableMovement();
 
@@ -100,7 +100,7 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
     FTimerDelegate TimerCallback;
     TimerCallback.BindLambda([=, this] {
         // Find and move to the player start
-        const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController(),FString("Checkpoint"));
+        const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController(), FString("Checkpoint"));
         SetActorLocation(PlayerStart->GetActorLocation());
         SetActorRotation(PlayerStart->GetActorRotation());
 
@@ -135,6 +135,10 @@ void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)
         UE_LOG(LogPlayerCharacter, Log, TEXT("Leveling up player %s from level %lld to %lld"), *GetName(), OldLevel, NewLevel);
         OnLevelUp.Broadcast(NewLevel);
     }
+
+    const auto OldStep = ExperienceLevelTransitions.IsValidIndex(NewLevel - 2) ? ExperienceLevelTransitions[NewLevel - 2] : 0;
+    const auto NewStep = ExperienceLevelTransitions.IsValidIndex(NewLevel - 1) ? ExperienceLevelTransitions[NewLevel - 1] : 0;
+    OnXpIncrease.Broadcast(CurrentExperience, OldStep, NewStep);
 }
 
 int64 AEnsPlayerCharacter::GetCurrentLevel() const
@@ -144,6 +148,11 @@ int64 AEnsPlayerCharacter::GetCurrentLevel() const
         if (CurrentExperience < ExperienceLevelTransitions[Index])
             break;
     return Index + 1;
+}
+
+int64 AEnsPlayerCharacter::GetMaxLevel() const
+{
+    return ExperienceLevelTransitions.Num() + 1;
 }
 
 UInventory* AEnsPlayerCharacter::GetInventoryComponent() const

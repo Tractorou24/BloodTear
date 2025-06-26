@@ -34,6 +34,10 @@ class ENS_API UMiscCheats : public UCheatManager
     /// \brief Applies \p Amount damage to the player.
     UFUNCTION(Exec)
     void Damage(int Amount);
+
+    /// \brief Applies \p Amount xp to the player.
+    UFUNCTION(Exec)
+    void IncreaseXP(int Amount);
 #pragma endregion
 
 #pragma region AI
