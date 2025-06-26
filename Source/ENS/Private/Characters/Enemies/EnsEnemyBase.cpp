@@ -95,6 +95,7 @@ void AEnsEnemyBase::BeginPlay()
 
 void AEnsEnemyBase::OnDeath(AEnsCharacterBase* SourceActor)
 {
+    AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Death")));
     // Try to increase xp if the source actor is a player
     if (auto* PlayerCharacter = Cast<AEnsPlayerCharacter>(SourceActor))
         PlayerCharacter->IncreaseXp(GivenExperience);
