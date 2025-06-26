@@ -12,6 +12,9 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPlayerCharacter, Log, All);
 
+/// \brief Delegate used when a player xp increases.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnXpIncrease, int64, NewAmount, int64, OldStep, int64, NextStep);
+
 /// \brief Delegate used when a player reaches a new level.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUp, int64, NewLevel);
 
@@ -60,6 +63,10 @@ public:
     /// \brief Gets the maximum level of the player.
     UFUNCTION(BlueprintCallable)
     [[nodiscard]] int64 GetMaxLevel() const;
+
+    /// \brief Called when the player xp increases.
+    UPROPERTY(BlueprintAssignable)
+    FOnXpIncrease OnXpIncrease;
 
     /// \brief Called when the player levels up (with the new level).
     UPROPERTY(BlueprintAssignable)
