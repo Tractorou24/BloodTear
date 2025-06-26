@@ -17,4 +17,8 @@ void UEnsPotionAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
         SetHealthQuantity(FMath::Clamp(NewHealthPotionQuantity, 0.0f, GetHealthMaxQuantity()));
         OnHealthPotionUsed.Broadcast(GetHealthQuantity());
     }
+    else if (Data.EvaluatedData.Attribute == GetHealthQuantityAttribute())
+    {
+        OnHealthPotionAdded.Broadcast(GetHealthQuantity());
+    }
 }
