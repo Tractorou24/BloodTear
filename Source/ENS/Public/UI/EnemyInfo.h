@@ -19,4 +19,7 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
     void OnHealthChanged(float healthPercent);
+
+    UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+    void OnDeath();
 };
