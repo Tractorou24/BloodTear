@@ -36,6 +36,12 @@ void UMiscCheats::Damage(const int Amount)
     }
 }
 
+void UMiscCheats::IncreaseXP(const int Amount)
+{
+    auto* Character = Cast<AEnsPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    Character->IncreaseXp(Amount);
+}
+
 void UMiscCheats::SpawnAI(const EEnemyType AIToSpawn, const uint8 Number) const
 {
     TSubclassOf<AEnsEnemyBase> AIClassToSpawn;
