@@ -146,6 +146,11 @@ int64 AEnsPlayerCharacter::GetCurrentLevel() const
     return Index + 1;
 }
 
+int64 AEnsPlayerCharacter::GetMaxLevel() const
+{
+    return ExperienceLevelTransitions.Num() + 1;
+}
+
 UInventory* AEnsPlayerCharacter::GetInventoryComponent() const
 {
     return Inventory;

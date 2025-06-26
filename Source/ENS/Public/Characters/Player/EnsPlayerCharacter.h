@@ -57,6 +57,10 @@ public:
     UFUNCTION(BlueprintCallable)
     [[nodiscard]] int64 GetCurrentLevel() const;
 
+    /// \brief Gets the maximum level of the player.
+    UFUNCTION(BlueprintCallable)
+    [[nodiscard]] int64 GetMaxLevel() const;
+
     /// \brief Called when the player levels up (with the new level).
     UPROPERTY(BlueprintAssignable)
     FOnLevelUp OnLevelUp;
