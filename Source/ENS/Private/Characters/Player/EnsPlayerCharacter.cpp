@@ -11,9 +11,13 @@
 #include "GAS/EnsAbilitySystemComponent.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameModeBase.h"
+#include "GAS/AttributeSets/EnsHealthAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "UI/PlayerLifeFeedback.h"
 
 DEFINE_LOG_CATEGORY(LogPlayerCharacter)
 
@@ -43,6 +47,12 @@ AEnsPlayerCharacter::AEnsPlayerCharacter()
     // Set up actor team
     TeamId = FGenericTeamId(0);
     TeamId.ResetAttitudeSolver();
+    
+    UIPlayerLifeFeedbackComponent = CreateDefaultSubobject<UWidgetComponent>(FName("UIEnemyInfoComponent"));
+    UIPlayerLifeFeedbackComponent->SetupAttachment(RootComponent);
+    UIPlayerLifeFeedbackComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+    UIPlayerLifeFeedbackClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/Widget/WB_PlayerLifeFeedback.WB_PlayerLifeFeedback_C"));
 }
 
 void AEnsPlayerCharacter::BaseAttack()
@@ -65,6 +75,8 @@ void AEnsPlayerCharacter::BaseAttack()
 void AEnsPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    InitUI();
+    
     if (!AbilitySystemComponent)
     {
         UE_LOG(LogPlayerCharacter, Error, TEXT("Cannot initialize enemy %s with no AbilitySystemComponent"), *GetName());
@@ -139,6 +151,27 @@ void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)
     const auto OldStep = ExperienceLevelTransitions.IsValidIndex(NewLevel - 2) ? ExperienceLevelTransitions[NewLevel - 2] : 0;
     const auto NewStep = ExperienceLevelTransitions.IsValidIndex(NewLevel - 1) ? ExperienceLevelTransitions[NewLevel - 1] : 0;
     OnXpIncrease.Broadcast(CurrentExperience, OldStep, NewStep);
+}
+
+void AEnsPlayerCharacter::HealthChanged(const FOnAttributeChangeData& Data)
+{
+    Super::HealthChanged(Data);
+    if (UIPlayerLifeFeedback)
+        UIPlayerLifeFeedback->OnPlayerHealthChanged(Data.NewValue / HealthAttributeSet->MaxHealth.GetBaseValue());
+}
+
+void AEnsPlayerCharacter::InitUI()
+{
+    // Setup UI for Locally Owned Players only, not AI or the server's copy of the PlayerControllers
+    APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (PC && PC->IsLocalPlayerController())
+    {
+        if (UIPlayerLifeFeedbackClass)
+        {
+            UIPlayerLifeFeedback = CreateWidget<UPlayerLifeFeedback>(PC, UIPlayerLifeFeedbackClass);
+            UIPlayerLifeFeedback->AddToViewport(-1);
+        }
+    }
 }
 
 int64 AEnsPlayerCharacter::GetCurrentLevel() const
