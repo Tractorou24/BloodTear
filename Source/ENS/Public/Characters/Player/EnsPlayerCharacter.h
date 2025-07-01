@@ -56,6 +56,10 @@ public:
     UFUNCTION(BlueprintCallable)
     void IncreaseXp(int64 Amount);
 
+    virtual void HealthChanged(const FOnAttributeChangeData& Data) override;
+
+    void InitUI();
+
     /// \brief Gets the current level of the player.
     UFUNCTION(BlueprintCallable)
     [[nodiscard]] int64 GetCurrentLevel() const;
@@ -117,6 +121,17 @@ private:
     /// \brief The attribute set to hold potions data.
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
     class UEnsPotionAttributeSet* PotionAttributeSet;
+
+    /// \brief The class used to display the player life feedback.
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<class UPlayerLifeFeedback> UIPlayerLifeFeedbackClass;
+    
+    /// \brief The widget component used to display the player life feedback.
+    UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    class UWidgetComponent* UIPlayerLifeFeedbackComponent = nullptr;
+
+    UPROPERTY()
+    UPlayerLifeFeedback* UIPlayerLifeFeedback = nullptr;
 
 #pragma region BaseAttck
     /// \brief Whether the player is attacking or not.
