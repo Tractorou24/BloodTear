@@ -74,6 +74,11 @@ void UInventory::BeginPlay()
                                                           HandleSet(2);
                                                           HandleMainAbility();
                                                       });
+        EnhancedInputComponent->BindActionValueLambda(AbilitySetSkill,
+                                                      ETriggerEvent::Started,
+                                                      [&](const FInputActionValue&) {
+                                                          HandleMainAbility();
+                                                      });
     }
 
     if (AEnsPlayerCharacter* PlayerCharacter = Cast<AEnsPlayerCharacter>(Pawn))

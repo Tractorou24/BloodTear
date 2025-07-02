@@ -124,6 +124,10 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
     UInputAction* HeavySetSkill = nullptr;
 
+    /// \brief Input action for using main ability
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    UInputAction* AbilitySetSkill = nullptr;
+
     /// \brief Handles the main ability input event.
     void HandleMainAbility();
 
