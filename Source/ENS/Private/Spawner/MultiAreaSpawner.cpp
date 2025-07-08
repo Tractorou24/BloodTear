@@ -232,6 +232,10 @@ void AMultiAreaSpawner::SpawnWave()
     TArray<int32> SpawnIndexes;
     for (int32 i = 0; i < SpawnAreas.Num(); ++i)
     {
+        for (auto j = 0; j < SpawnInformations[i].Num(); ++j)
+        {
+            SpawnEnemies(SpawnInformations[i][j], i, 1);
+        }
         SpawnInformations[i].Empty();
         SpawnIndexes.Add(i);
     }
