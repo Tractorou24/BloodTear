@@ -124,11 +124,16 @@ void AEnsEnemyBase::OnDeath(AEnsCharacterBase* SourceActor)
     auto* ItemInstanceEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), DeathEffect, GetActorLocation());
     ItemInstanceEffect->Activate();
 
+    TWeakObjectPtr<AActor> WeakThis(this);
+    TWeakObjectPtr<UNiagaraComponent> WeakEffect(ItemInstanceEffect);
+
     // Destroy the enemy & stop the system when the effect is finished
     FTimerDelegate TimerCallback;
-    TimerCallback.BindLambda([ItemInstanceEffect, this] {
-        ItemInstanceEffect->Deactivate();
-        Destroy();
+    TimerCallback.BindLambda([WeakEffect, WeakThis] {
+        if (WeakEffect.IsValid())
+            WeakEffect->Deactivate();
+        if (WeakThis.IsValid())
+            WeakThis->Destroy();
     });
 
     FTimerHandle Handle;
