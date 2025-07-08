@@ -135,7 +135,7 @@ void AEnsPlayerCharacter::OnDeath(AEnsCharacterBase* SourceActor)
 
 void AEnsPlayerCharacter::IncreaseXp(const int64 Amount)
 {
-    ensure(Amount > 0 && "Cannot add a negative experience amount.");
+    ensure(Amount >= 0 && "Cannot add a negative experience amount.");
 
     const auto OldLevel = GetCurrentLevel();
     CurrentExperience += Amount;
